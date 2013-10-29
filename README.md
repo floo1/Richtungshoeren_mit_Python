@@ -1,3 +1,1 @@
-print "hello"
-
-# weiter Zeile von meinem Mac aus geändert!
+und schwub ist alles weg ;)
