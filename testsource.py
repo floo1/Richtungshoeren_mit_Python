@@ -1,12 +1,8 @@
-def halo():
-    print ("geht nicht")
-#    return(30 + 5)
-
 def addieren(a,b):
 #    a=3
 #    b=4
     y=a-b
     print("%f plus %f  ergibt %f" %(a,b,y))
-    # return (y)
+    return (y)
 
 print ("guten Tag")
