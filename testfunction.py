@@ -1,7 +1,9 @@
-def addieren(a,b):
-#    a=3
-#    b=4
-    y=a-b
-    x=b-a
-    print("Die Koeffizienten sind a= %f und b= %f, a minus b ergibt den Wert y= %f, b minus a ergibt x=%f." %(a,b,y,x))
-    return (y,x)
+from testsource import *
+
+f=5
+r=7
+x,y=addieren(f,r)
+print("Der Rueckgabewert von y ist %f und von x %f" %(y,x))
+k=x+y
+print("Die Summe aus x und y sollte Null ergeben, bitte lasse dir den Wert von k anzeigen.")
+
