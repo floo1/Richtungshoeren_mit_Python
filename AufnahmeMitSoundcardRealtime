@@ -1,85 +1,56 @@
 ###Script zum Real-time-plotting aufgenommender Datein als Array mit Mikrofonen,
 ###waehlbare Anzahl des Realtime-Plots 
-###Pre-Autor: Andreas Minch, 06.11.13
-###Version: V.02
-###!!!Hier muss vorher der cd-Ordner gewechselt werden und das Module 
-###matplotlib geladen werden. Ausserdem Befehl fuer prozent pylab qt4 ausfuehren,
+###Autor: Andreas Minch, 06.11.13
+###Originalsourcecodes: bastibe.de und github.com/bastibe/PySoundCard
+###Version: V.03
+###Benutzung:!!!Hier muss vorher der cd-Ordner gewechselt werden, das Module matplotlib importiert und der Befehl prozent pylab qt4 im
+###CommandWindow ausfuehren werden,
 ###da sonst bei Windows Plotfenster im Command window erscheinen wuerden!!!
 
-############# load classes from modules ##############
+############# laden classes aus modules ##############
 import sys
-import matplotlib
 import matplotlib.pyplot as plt
+import matplotlib
 import pyaudio
 import numpy as np
-#import time
-from pysoundcard import Stream 
-from scipy.io.wavfile import read as wavread
-import wave
+from pysoundcard import Stream
+p = pyaudio.PyAudio() 
 
-############ pre moving ###############
+#################### vorheriges Fenster schliessen ###############
 plt.close() #Fenster von der vorhergehenden Aufnahme schliessen
 
-############# parameter for recording #############
+############# Aufnahmeparameter #############
 fs = 44100
 block_length = 64
 record_seconds = 10
-WAVE_OUTPUT_FILENAME = "SoundcardRealtimeRecord.wav"
 CHANNELS = 2
-p = pyaudio.PyAudio()
-FORMAT = pyaudio.paInt32
+n_down_plot = 50 #Variable Anzahl Plotts pro Sekunde
 
-n_down_plot = 50
-
-############ recording with device for extern soundcard ##########
+############ Stream mit Zugriffswegen fuer externe Soundkarte ##########
 s = Stream(sample_rate = fs, 
            block_length = block_length,
-           input_device_index = 1,
-           output_device_index = 4)
+           input_device_index = 1, #im CommandWindow den Weg herausfinden mit import pyaudio, py=pyaudio.PyAudio(), pa.get_device_info_by_index(NUMMERVERSUCH)
+           output_device_index = 4) 
 
-######## loop for showing every block_lenght-record in plot ##### 
 fig, ax = plt.subplots()
-
 s.start()
-#ca_record = s.read(block_length)
-#ca_left_record = ca_record[:,0]
-#line, = ax.plot(ca_left_record)
+plt.show(block=False) #Plot wird im Fenster gelöscht und neu geschrieben
 
-plt.show(block=False)
 ca_whole_record = []
-#tstart = time.time()
-#while time.time()-tstart < 5:
-
-#line, = ax.plot(np.random.randn(block_length)/4)
 num_of_blocks = int(fs*record_seconds/block_length)
-line, = ax.plot(np.random.randn(num_of_blocks)*15-50)
-#line, = ax.plot(float(range(-100, 0, 100/block_length)))
-pegel = np.zeros(num_of_blocks)
-for n in range(num_of_blocks):
+line, = ax.plot(np.random.randn(num_of_blocks)*15-50) #Skalierung der y-Achse
+pegel = np.zeros(num_of_blocks) #Nullvektor erstellen als Ausgang
+
+for n in range(num_of_blocks): #geht die Schleife solange durch, bis 
     ca_record = s.read(block_length)
-    ca_left_record = ca_record[:,0]
-    pegel[n] = 10*np.log10(np.sum(np.square(ca_left_record))/block_length)
- 
-    if np.mod(n, n_down_plot) == 0:
-        # print(n)
-         #line.set_ydata(ca_left_record)
+    pegel[n] = 10*np.log10(np.sum(np.square(ca_record))/block_length) #Pegel auf logarithmischer y-Achse darstellen 
+    ca_whole_record.append(ca_record) #haengt alle in blocklaenge aufgenommenes Array
+
+    if np.mod(n, n_down_plot) == 0: #Modul-Befehl fuer Rest berechnen, damit nur soviel wie n_down_plot im Plotfenster gezeigenangezeigt wird
         line.set_ydata(pegel)
         ax.draw_artist(ax.patch)
         ax.draw_artist(line)
         fig.canvas.update()
         fig.canvas.flush_events()
-    #s.write(ca_left_record)
-    ca_whole_record.append(ca_record)
 s.stop()
 print ("* done recording")
-
-######### erstellen und Abspielen der Wave-Datei !!!funktioniert noch nicht!!!  ########
-#ca_whole_record = round(ca_whole_record*2**15)
-#rounded_ca_whole_record = np(round(ca_whole_record)
-# data = "".join(ca_whole_record.astype(int)
-# wf = wave.open(WAVE_OUTPUT_FILENAME, "wb")
-# wf.setnchannels(CHANNELS)
-# wf.setsampwidth(p.get_sample_size(FORMAT))
-# wf.setframerate(fs)
-# wf.writeframes(data)
-# wf.close()
