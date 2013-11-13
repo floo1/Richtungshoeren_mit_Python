@@ -1,9 +1,6 @@
 # Signal erzeugen und abspielen
 
-import sys
 import numpy as np
-import matplotlib as plt
-from scipy.io.wavfile import read as wavread
 from pysoundcard import Stream
   
 block_length = 1024
@@ -18,3 +15,6 @@ s.start()
 s.write(data)
 s.stop()
 
+(data)
+s.stop()
+
