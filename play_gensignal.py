@@ -14,5 +14,11 @@ data = np.random.uniform(-0.7,0.7,sample)
 s = Stream(fs, block_length)
 s.start()
 s.write(data)
-s.stop()
-
+s.stop()
+
+
+
+
+
+s.stop()
+
