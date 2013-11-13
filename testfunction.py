@@ -1,5 +1,4 @@
 from testsource import *
-#von 13.11.13
 f=5
 r=7
 x,y=addieren(f,r)
