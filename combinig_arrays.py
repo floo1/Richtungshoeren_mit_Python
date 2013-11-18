@@ -9,7 +9,7 @@ b =  np.array([[5,6],[7,8]])
 # ranheangen der zwei vektoren als zeilenvektor in einem array
 p=np.vstack([a,b])
 
-# weiter Array erzeugen und anhaengen:
+# weiter Array erzeugen und anhaengen (schleife ware natürlich eleganter...):
 b2 = np.array([[1,1],[1,1]])
 p=np.vstack([p,b2])
 b3 = np.array([[2,2],[2,2]])
