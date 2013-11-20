@@ -15,4 +15,11 @@ p=np.vstack([p,b2])
 b3 = np.array([[2,2],[2,2]])
 p3=np.vstack([p,b3])
 
-print(p3)
+print('zusammengefuegt zu einem Array unterinander: ', p3)
+
+# zwei arrays in einen array als zeilenvektor
+z1 = np.append(a,b) # heangt die arrays aneinander
+print('aneinander geheangtes Array: ', z1)
+z2 = np.append(a,b, axis=1) # axis=1 gibt die info: bitte nebeneinander heangen
+print('zusammengefuegt zu einem Array als Zeielnvektor, also nebeneinander: ')
+print(z2)
