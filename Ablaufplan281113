@@ -1,0 +1,52 @@
+Projekt 1 – Richtungshören mit Python
+
+Ablaufplan der einzelnen Projektsitzungen
+
+1) 24.10.13
+Besprechung der Inhalte des Projektes
+Überlegung Matlab vs. Python
+Wiederholung von msound; Stereo-Echtzeitaufnahme
+2) 24.10.13 (Vorhaben)
+Kontakt zur Soundkarte n (1024) Samples abholen 
+Vektor x als Plot darstellen
+y= fft(x) y,x sind Vektoren
+re+li von 2 Sektren, Pegeldiff bei 1 Frequenz berechnen
+re+li Phasendiff. bei 1 Frequenz
+3) 31.10.13
+Outputformat von einem Block in pysoundcard: Wertebereich, Typ, …
+für alle Zeitpunkte und Frequenzen
+Pegeldiff. plotten, für gegebene Stereoinputbloecke
+Phasendifferenz inkl. Unwrap? s. Verhindern von Sprüngen
+(sub-) Plot bei fortlaufender Zeit 
+Uebertragungsfkt.-Messung H1/H2-Schaetzer gleichzeitig aufnehmen und wiedergeben
+4) 07.11.13
+Eigene Fkt. in separaten Files aufrufen (jap)
+fft + Phasendifferenz (muss noch ins Script eingepflegt werden)
+fft + Pegeldifferenz (“)
+Soundkarte: kontinuierlich lesen unter-abgetastet plotten, aktuelle Pegeldiff. anzeigen lassen (jap)
+Wave-Datei erstellen (jap, bis auf wave-Datei schreiben)
+Uebertragungsfkt. Schaetzer (Ansatz da, doch läuft noch nicht)
+5) 14.11.13
+Erweiterung der Pegel und Phasendifferenzen von Sinussignalen auf Rauschsignale (relevante Pegel oberhalb von z.B. Wohnzimmergeraeuschen->Schwellenwert festlegen) Franz
+Funktion return von Vektoren
+Uebertragungsfkt (Aufnahme und Wiedergabe)
+Fontend bei Matplotlib
+GUI (TKinter oder Qt)
+
+
+6) 21.11.13
+Peak in FFT erkennen (ok)
+H1/H2 Schaetzer erstellen 
+(Petra) Sourcecode in Matlab und Python fuer HFTF-Messung (Rauschen abspielen, Rauschen aufnehmen
+1)  eine Ubertragungsfkt bilden, dann daraus die Impulsantwort bilden und abspeichern als WAVE
+2) Abschneiden der ersten 20000 Samples der Aufnahme und Grund verstehen => SV an der Petra (ok)
+3) Abschneiden der Raumreflexionsanteilen fuer Petra-HRTF (in Arbeit)
+fremde HRTF einspielen (ok)
+7) 28.11.13
+H1/H2 Schaetzer erstellen (noch nicht)
+Abschneiden der Raumreflexionen in Impulsantwort (noch nicht)
+GUI Grundgeruest erstellen (ok)
+8) in Zukunft
+5.12. Abschneiden der Raumreflexionen in Impulsantwort
+5.12. GUI mit Funktionen versetzen und Realtime-Plot ermoeglichen
+26.11. Original-Kunstkopf durchmessen (HRTF für 360 Grad in 15 Grad Auflösung)
