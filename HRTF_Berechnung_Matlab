@@ -1,0 +1,70 @@
+%function H_xy=hrtf_function(signal,response)
+% function zur Erzeugung des H1 Schaetzers für Uebertragungsfunktion des Dummy
+
+
+close;
+clear all;
+clc
+%%
+%Fs =44100;
+anz_dat=8; %hier angeben um wieviele dateien (entspricht einfallsrichtungen) es sich handelt
+counter = -45;
+for n=1:anz_dat %damit werden die aus 8 dateien (aus 8 versch. einfallsrichtungen) nacheinander in einem rutsch eingelesen, damit gearbeitet und dann abgespeichert
+ counter = counter + 45;
+
+Nfft = 1024;
+Datalen= 512;
+Nover = Datalen*0.5;
+
+
+response_l = wavread(sprintf('hrir_links_petra_%dgrad',counter)); % Aufgenommen vom Dummy fuer links
+filename_l = sprintf('hrtf_links_petra_%dgrad',counter); %damit wird der endgültige dateiname für die abzuspeichernde HRTF der linken seite festgelegt
+
+response_r = wavread(sprintf('hrir_rechts_petra_%dgrad',counter)); % und fuer rechts
+filename_r = sprintf('hrtf_rechts_petra_%dgrad',counter); % und fuer rechts
+
+
+[signal, Fs, nbits, readinfo] = wavread(sprintf('hrir_wiedergabe_petra_%dgrad',counter)); % abgespieltes Signal vom Lautsprecher
+
+Phi_xx = 0;
+
+Phi_xy_l = 0;
+Phi_xy_r = 0;
+n_blocks = length(signal)/Nfft;
+% aufteilen in bloecke
+for k=1:n_blocks
+    idx = (k-1)*Nfft +(1:Nfft);   %erster durchlauf: k=0 =>idx=[1 2 ... 1024], zweiter: k=1 =>idx=[1025 1026 ... 2048] usw.
+    
+    %% es wird im ersten Durchlauf das 1. bis zum 1024. element verwendet und daraus die fft gebildet, dann im zweiten Durchlauf vom 1025. bis zum 2048. usw.
+    f_signal = fft(signal(idx))/Nfft; 
+    f_response_l = fft(response_l(idx))/Nfft;
+    f_response_r = fft(response_r(idx))/Nfft;
+   
+    %% Berechnung der Autoleistungsdichte und der Kreuzleistungsdichten links und rechts
+    Phi_xx =Phi_xx + abs(f_signal).^2;
+    
+    Phi_xy_l =Phi_xy_l + f_signal.*conj(f_response_l);
+    Phi_xy_r =Phi_xy_r + f_signal.*conj(f_response_r);
+
+end
+
+Phi_xx = Phi_xx / n_blocks; %das Autoleistungsdichtespektrum
+
+Phi_xy_l = Phi_xy_l / n_blocks; %Kreuzleistungsdichtesprektrum links
+Phi_xy_r = Phi_xy_r / n_blocks; %" rechts
+
+H_xy_l=conj(Phi_xy_l)./Phi_xx; %der H1-Schaetzer links mit symetrischen Spektrum
+H_xy_r=conj(Phi_xy_r)./Phi_xx; %" " rechts " " "
+
+H_xy_l=H_xy_l(1:end/2,:); %der fertige H1-Schaetzer links
+H_xy_r=H_xy_r(1:end/2,:); %" " " rechts
+
+%f = Fs/2*linspace(0,1,Nfft/2);
+%figure(1)
+%plot(abs(H_xy)) %frequenzvektor noch reinmachen
+
+    %% Abspeichern der H1-Schaetzer in eine wav-Datei
+wavwrite(H_xy_l,Fs, nbits,filename_l); 
+wavwrite(H_xy_r,Fs, nbits,filename_r);
+
+end
