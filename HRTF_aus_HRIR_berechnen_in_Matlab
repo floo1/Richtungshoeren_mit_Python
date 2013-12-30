@@ -22,6 +22,10 @@ response_r = wavread(sprintf('hrir_rechts_petra_%dgrad',counter)); % und fuer re
 
 [signal, Fs, nbits, readinfo] = wavread(sprintf('hrir_wiedergabe_petra_%dgrad',counter)); % abgespieltes Signal vom Lautsprecher
 
+%%Erzeugung des Frequenzvektors, der in die Textdatei mitübergeben wird
+
+f_vec = (0:Nfft/2)*Fs/Nfft; %
+
 Phi_xx = 0;
 
 Phi_xy_l = 0;
@@ -52,21 +56,41 @@ Phi_xy_r = Phi_xy_r / n_blocks; %" rechts
 H_xy_l=conj(Phi_xy_l)./Phi_xx; %der H1-Schaetzer links mit symetrischen Spektrum
 H_xy_r=conj(Phi_xy_r)./Phi_xx; %" " rechts " " "
 
-H_xy_l=H_xy_l(1:end/2,:); %der fertige H1-Schaetzer links
-H_xy_r=H_xy_r(1:end/2,:); %" " " rechts
+H_xy_l=H_xy_l(1:1+end/2,:); %der fertige H1-Schaetzer links
+H_xy_r=H_xy_r(1:1+end/2,:); %" " " rechts
 
-%f = Fs/2*linspace(0,1,Nfft/2);
+
 %figure(1)
-plot(abs(H_xy_r)) %frequenzvektor noch reinmachen
+%plot(f_vec, abs(H_xy_r)) %frequenzvektor noch reinmachen
 
-    %% Abspeichern der H1-Schaetzer in eine wav-Datei
+    %% Abspeichern der H1-Schaetzer in eine txt-Datei
+    %Speicherformat: Realteil/Imaginaerteil/Frequenzvektor in spalten
+
+
+H_xy_l_txt=[real(H_xy_l) imag(H_xy_l) f_vec']; %in die abzuspeichernde Matrix wird der in den spalten 1 bis 3 der realteil, imaginärteil und frequenzvektor eingebunden
+H_xy_r_txt=[real(H_xy_r) imag(H_xy_r) f_vec'];
+
+infotext = 'realteil, imagteil, freq';
 
 filename_l = sprintf('hrtf_links_petra_%dgrad.txt',counter); %damit wird der endgültige dateiname für die abzuspeichernde HRTF der linken seite festgelegt
-save(filename_l, 'H_xy_l', 'Fs','nbits', '-ASCII')
+fid=fopen(filename_l, 'w');
+if fid == -1,
+    error('could not open file %s', filename_l)
+else
+    fprintf(fid,'#%s\n', infotext);
+    fprintf(fid, '%16.8f  %16.8f  %16.8f\n', H_xy_l_txt');
+    fclose(fid);
+end
+
 
 filename_r = sprintf('hrtf_rechts_petra_%dgrad.txt',counter); % ebenso fuer rechts
-save(filename_r, 'H_xy_l', 'Fs','nbits', '-ASCII')
-%wavwrite(H_xy_l,Fs, nbits,filename_l); 
-%wavwrite(H_xy_r,Fs, nbits,filename_r);
+fid=fopen(filename_r, 'w');
+if fid == -1,
+    error('could not open file %s', filename_r)
+else
+    fprintf(fid,'#%s\n', infotext);
+    fprintf(fid, '%16.8f  %16.8f  %16.8f\n', H_xy_r_txt');
+    fclose(fid);
+end
 
 end
