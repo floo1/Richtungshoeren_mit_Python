@@ -5,9 +5,9 @@ import pysoundcard
 import numpy as np
 
 fs = 44100
-block_length = 8192
+block_length = 1024*8
 s = Stream(sample_rate=fs, block_length=block_length)
-time = 3 # Laenge des Rauschens in Sekunden
+time = 1 # Laenge des Rauschens in Sekunden
 noise = np.random.randn(block_length,2)/20.0 
 n_blocks = int(fs*time/block_length)
 
@@ -21,6 +21,6 @@ for n in range(n_blocks):
 	rec = s.read(block_length)
 	rec_file=np.vstack([rec_file,rec]) # hinzufügen des aufgenommenen blocks zu rec_file als zeilenvektor in einem array!
 	
-s.write(rec_file)
-print(rec_file)
+#s.write(rec_file)
+#print(rec_file)
 s.stop()
